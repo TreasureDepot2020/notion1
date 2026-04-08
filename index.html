@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notion 1.0｜はじめての情報整理術 - KUNISHIGE Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --accent: #2d6a4f;
+  --accent-light: #d8f3dc;
+  --accent-glow: #52b788;
+  --warm: #e07a5f;
+  --warm-light: #fce4db;
+  --slate: #6c757d;
+  --blue: #3a86ff;
+  --blue-light: #e8f0fe;
+  --border: #e0ddd5;
+  --card-bg: #ffffff;
+  --shadow: 0 2px 20px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.10);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans JP', 'Zen Kaku Gothic New', sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.8;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 30%, rgba(82,183,136,0.15), transparent),
+    radial-gradient(ellipse 500px 500px at 80% 70%, rgba(58,134,255,0.12), transparent);
+  pointer-events: none;
+}
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 70%);
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 800px;
+  padding: 2rem;
+  animation: fadeUp 1s ease-out;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-badge {
+  display: inline-block;
+  padding: 0.4rem 1.4rem;
+  border: 1px solid rgba(82,183,136,0.5);
+  border-radius: 100px;
+  color: var(--accent-glow);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(4px);
+  background: rgba(82,183,136,0.08);
+}
+.hero h1 {
+  font-size: clamp(2rem, 5.5vw, 3.5rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 0.6rem;
+}
+.hero h1 .notion-mark {
+  background: linear-gradient(135deg, var(--accent-glow), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  color: rgba(255,255,255,0.7);
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.04em;
+}
+.hero-date {
+  display: inline-block;
+  padding: 0.6rem 1.8rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(4px);
+}
+.hero-date span { color: var(--accent-glow); }
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 2.6rem;
+  background: linear-gradient(135deg, var(--accent-glow), #40916c);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 4px 24px rgba(82,183,136,0.35);
+}
+.hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(82,183,136,0.45);
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.35);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ===== SECTIONS ===== */
+section { padding: 5rem 1.5rem; }
+.container { max-width: 900px; margin: 0 auto; }
+.section-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 0.3rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+.section-lead {
+  font-size: 1.05rem;
+  color: var(--slate);
+  max-width: 680px;
+  margin-bottom: 3rem;
+}
+
+/* ===== WHAT IS NOTION ===== */
+.what-notion { background: #fff; border-bottom: 1px solid var(--border); }
+.notion-hero-img {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 16px;
+  margin: 0 auto 2rem;
+  display: block;
+  box-shadow: var(--shadow-lg);
+}
+.notion-desc {
+  font-size: 1.05rem;
+  color: var(--slate);
+  max-width: 700px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+  line-height: 1.8;
+}
+.notion-desc strong { color: var(--ink); }
+.adopters {
+  background: var(--paper);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.adopters-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 1rem;
+}
+.adopters-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.adopter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 90px;
+}
+.adopter-item .a-icon { font-size: 1.6rem; }
+.adopter-item .a-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.adopter-item .a-type {
+  font-size: 0.65rem;
+  color: var(--slate);
+}
+.notion-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.nf-card {
+  text-align: center;
+  padding: 1.2rem;
+  border-radius: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+}
+.nf-card .nf-icon { font-size: 1.6rem; margin-bottom: 0.4rem; }
+.nf-card .nf-label { font-size: 0.85rem; font-weight: 700; color: var(--ink); }
+
+/* ===== PAIN ===== */
+.pain { background: #fff; border-bottom: 1px solid var(--border); }
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+.pain-card { padding: 1.6rem; border-radius: 14px; background: var(--paper); border: 1px solid var(--border); transition: transform 0.2s; }
+.pain-card:hover { transform: translateY(-3px); }
+.pain-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+.pain-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.pain-card p { font-size: 0.9rem; color: var(--slate); line-height: 1.6; }
+
+/* ===== GIF BANNER ===== */
+.gif-banner {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.gif-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 500px 300px at 50% 50%, rgba(82,183,136,0.12), transparent);
+  pointer-events: none;
+}
+.gif-banner .gif-inner {
+  position: relative;
+  z-index: 1;
+}
+.gif-number {
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent-glow), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+  margin-bottom: 0.3rem;
+}
+.gif-number span {
+  font-size: 0.4em;
+  -webkit-text-fill-color: rgba(255,255,255,0.7);
+}
+.gif-headline {
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.6rem;
+}
+.gif-sub {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.6);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+.gif-tags {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 1.2rem;
+}
+.gif-tag {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid rgba(82,183,136,0.4);
+  border-radius: 100px;
+  color: var(--accent-glow);
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: rgba(82,183,136,0.06);
+}
+
+/* ===== SOLUTION ===== */
+.solution { background: linear-gradient(180deg, var(--paper) 0%, #f0f7f4 100%); }
+.solution-box { background: var(--card-bg); border-radius: 20px; padding: 2.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); }
+.solution-box h3 { font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 1.5rem; text-align: center; }
+.goal-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.goal-item:last-child { border-bottom: none; }
+.goal-check { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; margin-top: 2px; }
+.goal-text { font-size: 1rem; line-height: 1.7; }
+.goal-text strong { color: var(--accent); }
+
+/* ===== CURRICULUM ===== */
+.curriculum { background: #fff; }
+.cur-list { display: flex; flex-direction: column; gap: 1rem; }
+.cur-item { display: flex; gap: 1.4rem; padding: 1.6rem; border-radius: 16px; background: var(--paper); border: 1px solid var(--border); transition: box-shadow 0.25s; }
+.cur-item:hover { box-shadow: var(--shadow); }
+.cur-num { flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; color: #fff; }
+.cur-num.n1 { background: linear-gradient(135deg, #3a86ff, #5e60ce); }
+.cur-num.n2 { background: linear-gradient(135deg, #52b788, #2d6a4f); }
+.cur-num.n3 { background: linear-gradient(135deg, #e07a5f, #bc4749); }
+.cur-num.n4 { background: linear-gradient(135deg, #9b5de5, #7b2cbf); }
+.cur-num.n5 { background: linear-gradient(135deg, #f77f00, #e36414); }
+.cur-num.n6 { background: linear-gradient(135deg, #00b4d8, #0077b6); }
+.cur-body h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem; }
+.cur-body p { font-size: 0.9rem; color: var(--slate); line-height: 1.6; }
+
+/* ===== EVENT DETAILS ===== */
+.event-details { background: linear-gradient(180deg, #fff 0%, var(--paper) 100%); }
+.event-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+.event-card { background: var(--card-bg); border-radius: 16px; padding: 1.8rem; border: 1px solid var(--border); box-shadow: var(--shadow); text-align: center; }
+.event-card .ev-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+.event-card .ev-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); margin-bottom: 0.4rem; }
+.event-card .ev-value { font-size: 1.15rem; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.event-card .ev-value small { display: block; font-size: 0.85rem; font-weight: 400; color: var(--slate); margin-top: 0.2rem; }
+.event-card .ev-value .price-highlight { color: var(--warm); }
+.event-note { text-align: center; font-size: 0.9rem; color: var(--slate); margin-top: 1rem; }
+
+/* ===== TARGET ===== */
+.target { background: linear-gradient(180deg, #f0f7f4 0%, var(--paper) 100%); }
+.target-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.target-card { background: var(--card-bg); border-radius: 16px; padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--border); text-align: center; }
+.target-card .emoji { font-size: 2.4rem; margin-bottom: 0.8rem; }
+.target-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--accent); }
+.target-card p { font-size: 0.9rem; color: var(--slate); line-height: 1.7; }
+
+/* ===== INSTRUCTOR ===== */
+.instructor { background: #fff; border-top: 1px solid var(--border); }
+.inst-box { display: flex; gap: 2.5rem; align-items: flex-start; flex-wrap: wrap; }
+.inst-photo { flex-shrink: 0; width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent-light); box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.inst-info { flex: 1; min-width: 280px; }
+.inst-info h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.3rem; }
+.inst-info .org { font-size: 0.85rem; color: var(--accent); font-weight: 500; margin-bottom: 0.3rem; }
+.inst-info .credentials { font-size: 0.8rem; color: var(--slate); margin-bottom: 1rem; line-height: 1.6; }
+.inst-info .bio { font-size: 0.92rem; color: var(--slate); line-height: 1.9; }
+.inst-info .bio strong { color: var(--ink); font-weight: 700; }
+
+/* ===== CONTACT ===== */
+.contact { background: var(--paper); border-top: 1px solid var(--border); }
+.contact-box { background: var(--card-bg); border-radius: 20px; padding: 2.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); text-align: center; max-width: 600px; margin: 0 auto; }
+.contact-box .contact-icon { font-size: 2.4rem; margin-bottom: 0.8rem; }
+.contact-box h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem; }
+.contact-box p { font-size: 0.95rem; color: var(--slate); margin-bottom: 1.5rem; line-height: 1.7; }
+.contact-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 2rem; background: var(--blue); color: #fff; font-size: 0.95rem; font-weight: 700; border-radius: 10px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 16px rgba(58,134,255,0.25); }
+.contact-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(58,134,255,0.35); }
+
+/* ===== CTA ===== */
+.cta-section { background: linear-gradient(160deg, #1a1a2e 0%, #0f3460 100%); text-align: center; padding: 5rem 1.5rem; }
+.cta-section .section-title { color: #fff; }
+.cta-section p { color: rgba(255,255,255,0.65); margin-bottom: 2rem; font-size: 1.05rem; }
+.cta-btn { display: inline-flex; align-items: center; gap: 0.6rem; padding: 1.1rem 3rem; background: linear-gradient(135deg, var(--accent-glow), #40916c); color: #fff; font-size: 1.15rem; font-weight: 700; border-radius: 14px; text-decoration: none; transition: transform 0.25s, box-shadow 0.25s; box-shadow: 0 4px 24px rgba(82,183,136,0.35); margin-bottom: 1rem; }
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(82,183,136,0.5); }
+.cta-note { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+/* ===== FOOTER ===== */
+footer { text-align: center; padding: 2rem; font-size: 0.8rem; color: var(--slate); border-top: 1px solid var(--border); }
+footer a { color: var(--slate); text-decoration: none; transition: color 0.2s; }
+footer a:hover { color: var(--accent); }
+.footer-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  section { padding: 3.5rem 1.2rem; }
+  .cur-item { flex-direction: column; gap: 0.8rem; }
+  .inst-box { flex-direction: column; align-items: center; text-align: center; }
+  .solution-box { padding: 1.5rem; }
+  .contact-box { padding: 1.5rem; }
+  .event-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">KUNISHIGE Lab ── Zoom セミナー</div>
+    <h1><span class="notion-mark">Notion 1.0</span><br>はじめての情報整理術</h1>
+    <p class="hero-sub">覚えるのではなく、探せる形で残す。<br>情報整理の習慣化が、あなたの仕事と人生を変える。</p>
+    <div class="hero-date">📅 <span>4/25（土）13:00〜</span>｜Zoom開催｜約3時間</div>
+    <br>
+    <a href="https://sns109.jp/p/r/Gd2ld3p5" class="hero-cta">お申し込みはこちら →</a>
+  </div>
+  <div class="hero-scroll">scroll</div>
+</section>
+
+<!-- PAIN -->
+<section class="pain">
+  <div class="container">
+    <span class="section-label">Problem</span>
+    <h2 class="section-title">こんな悩み、抱えていませんか？</h2>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">🔍</div>
+        <h3>情報が見つからない</h3>
+        <p>メモ、ファイル、ブックマーク…あちこちに散らばって、いざ必要な時に見つからない。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">📁</div>
+        <h3>フォルダ整理が限界</h3>
+        <p>フォルダを増やすほどどこに入れたか迷う。分類の正解が見えないまま時間だけが過ぎる。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">😵‍💫</div>
+        <h3>ツールが多すぎる</h3>
+        <p>メモアプリ、タスク管理、共有ドキュメント…使い分けに疲れて、どれも中途半端になる。</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🤷</div>
+        <h3>Notionを入れたけど放置</h3>
+        <p>アカウントは作った。でも何から始めればいいか分からず、結局使っていない。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS NOTION -->
+<section class="what-notion">
+  <div class="container">
+    <span class="section-label">What is Notion?</span>
+    <h2 class="section-title">Notionとは？ ── オールインワンのワークスペース</h2>
+    <img src="https://images.squarespace-cdn.com/content/693684d491a25130f9e5cc35/da684c36-05ce-4fc7-b015-a06729d7cad2/Notionimage.png?content-type=image%2Fpng" alt="Notion オールインワンツール" class="notion-hero-img">
+    <p class="notion-desc">
+      Notionは、メモ・ドキュメント・タスク管理・データベース・Wiki…<br>
+      これまでバラバラだったツールを<strong>ひとつの画面に統合</strong>できるオールインワンのワークスペースです。<br>
+      <strong>書く・整理する・つなぐ・共有する</strong>を、すべてNotion内で完結できます。
+    </p>
+    <div class="adopters">
+      <div class="adopters-label">世界の企業・大学でも活用されています</div>
+      <div class="adopters-list">
+        <div class="adopter-item">
+          <span class="a-icon">🤖</span>
+          <span class="a-name">OpenAI</span>
+          <span class="a-type">ChatGPT開発元</span>
+        </div>
+        <div class="adopter-item">
+          <span class="a-icon">🚗</span>
+          <span class="a-name">トヨタ</span>
+          <span class="a-type">日本最大の製造業</span>
+        </div>
+        <div class="adopter-item">
+          <span class="a-icon">🎓</span>
+          <span class="a-name">東京大学</span>
+          <span class="a-type">国立大学</span>
+        </div>
+        <div class="adopter-item">
+          <span class="a-icon">🏫</span>
+          <span class="a-name">慶應義塾大学</span>
+          <span class="a-type">私立大学</span>
+        </div>
+        <div class="adopter-item">
+          <span class="a-icon">🎵</span>
+          <span class="a-name">Spotify</span>
+          <span class="a-type">音楽ストリーミング</span>
+        </div>
+        <div class="adopter-item">
+          <span class="a-icon">📸</span>
+          <span class="a-name">Pinterest</span>
+          <span class="a-type">画像プラットフォーム</span>
+        </div>
+      </div>
+    </div>
+    <div class="notion-features">
+      <div class="nf-card">
+        <div class="nf-icon">✍️</div>
+        <div class="nf-label">書く</div>
+      </div>
+      <div class="nf-card">
+        <div class="nf-icon">🗂️</div>
+        <div class="nf-label">整理する</div>
+      </div>
+      <div class="nf-card">
+        <div class="nf-icon">🔗</div>
+        <div class="nf-label">つなぐ</div>
+      </div>
+      <div class="nf-card">
+        <div class="nf-icon">🤝</div>
+        <div class="nf-label">共有する</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GIF APPEAL BANNER -->
+<section class="gif-banner">
+  <div class="gif-inner">
+    <div class="gif-number">30<span>本以上</span></div>
+    <div class="gif-headline">📹 基本操作のGIF動画を教材に収録</div>
+    <p class="gif-sub">テキストだけでは伝わらない操作手順を、パラパラ動画（GIF）で完全サポート。<br>「見ながら真似するだけ」で、初心者でも迷わず手を動かせます。</p>
+    <div class="gif-tags">
+      <span class="gif-tag">ページ作成</span>
+      <span class="gif-tag">/コマンド操作</span>
+      <span class="gif-tag">ブロック挿入</span>
+      <span class="gif-tag">ドラッグ整理</span>
+      <span class="gif-tag">カラムレイアウト</span>
+      <span class="gif-tag">プレゼン切替</span>
+      <span class="gif-tag">PDF出力</span>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution">
+  <div class="container">
+    <span class="section-label">Solution</span>
+    <h2 class="section-title">このセミナーで手に入るもの</h2>
+    <p class="section-lead">難しい設定は一切不要。「自分でページを作り、情報を整理できる」状態を手に入れます。</p>
+    <div class="solution-box">
+      <h3>セミナー終了後、あなたはこうなる</h3>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <div class="goal-text">Notionの<strong>ページ × ブロック</strong>の考え方を理解し、自分で情報を組み立てられる</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <div class="goal-text"><strong>フォルダ管理から脱却</strong>し、「親ページ → 子ページ」で体系的に整理する方法が分かる</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <div class="goal-text">コールアウト・トグル・カラムなどを使い、<strong>見やすいコンテンツページ</strong>を作れる</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <div class="goal-text">Notionのページをそのまま<strong>プレゼン資料</strong>として使えるようになる</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <div class="goal-text">Notionコンテンツを<strong>共有リンク＋PDFで販売</strong>するワークフローを知る</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="curriculum" id="curriculum">
+  <div class="container">
+    <span class="section-label">Curriculum</span>
+    <h2 class="section-title">全6単元のカリキュラム</h2>
+    <p class="section-lead">Notion初心者がドキュメント中心の基本を身につけ、情報整理を習慣化できるよう構成しています。</p>
+    <div class="cur-list">
+      <div class="cur-item">
+        <div class="cur-num n1">1</div>
+        <div class="cur-body">
+          <h3>Notionの基本情報（考え方と準備）</h3>
+          <p>情報整理がなぜ必要か？ Notionの全体像と進化（1.0 → 2.0 → 3.0）、アカウント登録から表示設定まで。</p>
+        </div>
+      </div>
+      <div class="cur-item">
+        <div class="cur-num n2">2</div>
+        <div class="cur-body">
+          <h3>基本操作（ページとブロックの理解）</h3>
+          <p>UIの全体像、ページ × ブロックの仕組み、新規ページ作成、/コマンド・ショートカット・Markdown記法。</p>
+        </div>
+      </div>
+      <div class="cur-item">
+        <div class="cur-num n3">3</div>
+        <div class="cur-body">
+          <h3>情報を整理する考え方（脱・フォルダ管理）</h3>
+          <p>親ページ設計、「人・物・金・情報・仕事」の5分類、整理が続く5つのルール、お気に入り・Wiki活用。</p>
+        </div>
+      </div>
+      <div class="cur-item">
+        <div class="cur-num n4">4</div>
+        <div class="cur-body">
+          <h3>見やすいコンテンツページの作り方</h3>
+          <p>読みやすい文章構成、カラムレイアウト、画像・GIF・WebP活用、Mermaid記法でチャート作成。</p>
+        </div>
+      </div>
+      <div class="cur-item">
+        <div class="cur-num n5">5</div>
+        <div class="cur-body">
+          <h3>プレゼンのテクニック</h3>
+          <p>プレゼンテーションビューの使い方、レイアウトの微調整、画像拡大表示でビジュアル重視のプレゼン。</p>
+        </div>
+      </div>
+      <div class="cur-item">
+        <div class="cur-num n6">6</div>
+        <div class="cur-body">
+          <h3>共有リンクでコンテンツ販売</h3>
+          <p>Web公開 → 短縮URL → PDF出力 → 有料コンテンツとして提供するまでのワークフロー。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENT DETAILS -->
+<section class="event-details" id="details">
+  <div class="container">
+    <span class="section-label">Event Details</span>
+    <h2 class="section-title">📅 開催概要</h2>
+    <div class="event-grid">
+      <div class="event-card">
+        <div class="ev-icon">🗓️</div>
+        <div class="ev-label">日時</div>
+        <div class="ev-value">4/25（土）13:00〜<small>所要時間：約3時間<br>（質疑応答で延長の可能性あり）</small></div>
+      </div>
+      <div class="event-card">
+        <div class="ev-icon">📍</div>
+        <div class="ev-label">開催形式</div>
+        <div class="ev-value">オンライン開催<small>Zoomを使用</small></div>
+      </div>
+      <div class="event-card">
+        <div class="ev-icon">💰</div>
+        <div class="ev-label">参加費</div>
+        <div class="ev-value">
+          一般：<span class="price-highlight">5,000円</span>
+          <small>AI効率課メンバー：1,000円</small>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="ev-icon">💻</div>
+        <div class="ev-label">準備物</div>
+        <div class="ev-value">インターネット接続可能なPC<small>＋ Zoomに入室できる環境</small></div>
+      </div>
+    </div>
+    <p class="event-note">🎁 参加特典：30本以上のGIF動画付きNotion教材ページを共有します</p>
+  </div>
+</section>
+
+<!-- TARGET -->
+<section class="target">
+  <div class="container">
+    <span class="section-label">Who</span>
+    <h2 class="section-title">こんな方におすすめです</h2>
+    <div class="target-cols">
+      <div class="target-card">
+        <div class="emoji">🌱</div>
+        <h3>Notion完全初心者</h3>
+        <p>アカウントは作ったものの、何から始めればいいか分からない方。ゼロから丁寧にお伝えします。</p>
+      </div>
+      <div class="target-card">
+        <div class="emoji">🔄</div>
+        <h3>最新情報をキャッチアップしたい方</h3>
+        <p>以前触ったけど離れていた方。Notionの進化（1.0→2.0→3.0）を把握し直す絶好の機会です。</p>
+      </div>
+      <div class="target-card">
+        <div class="emoji">💼</div>
+        <h3>情報整理を仕組み化したい個人事業主</h3>
+        <p>資料・メモ・アイデアが散乱している方。Notionで「探せる・育てる」情報基盤を構築します。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTRUCTOR -->
+<section class="instructor">
+  <div class="container">
+    <span class="section-label">Instructor</span>
+    <h2 class="section-title">👨‍🏫 講師紹介</h2>
+    <div class="inst-box">
+      <img src="https://images.squarespace-cdn.com/content/v1/693684d491a25130f9e5cc35/9e1271b1-4a2d-4b78-8fdc-144eb6153557/Kunishige.png" alt="國重公秀" class="inst-photo">
+      <div class="inst-info">
+        <h3>國重 公秀 <span style="font-weight:400;font-size:0.85rem;color:var(--slate);">-Kimihide Kunishige-</span></h3>
+        <p class="org">生成AIコンサルタント ／ KUNISHIGE Lab 代表</p>
+        <p class="credentials">
+          ▪️ プロンプトスクール「飛翔」公認管理人<br>
+          ▪️ James Skinner氏の AI Super Human で学ぶ<br>
+          ▪️ 東大「AI経営講座」修了 ／ 生成AIパスポート 取得
+        </p>
+        <p class="bio">
+          飲食業界で<strong>31年</strong>の経験を持ち、全国展開の飲食企業ではホールディングス会社の執行役員や店舗運営会社の取締役として、<strong>売上16億円から300億円</strong>への企業成長を牽引。
+          <strong>50歳で独立</strong>後、OEM食品の開発を開始。SNSを活用したEC販売や卸で安定した収益を実現。
+          その後、NPO法人・一般法人・個人事業主のオーナー様からの依頼を受け、コンサルティング業務も展開。
+          業務を自動化し、AIを活用することで<strong>1日3時間で業務を完結</strong>。
+          空いた時間はAIの研究、コンサルティング、ボランティア活動、孫との時間に充て、ワークライフバランスを重視した生活を実践中。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact">
+  <div class="container">
+    <span class="section-label">Contact</span>
+    <h2 class="section-title">📩 お問い合わせ</h2>
+    <div class="contact-box">
+      <div class="contact-icon">💬</div>
+      <h3>ChatWorkでお気軽にご質問ください</h3>
+      <p>セミナーに関するご質問は、ChatWorkグループ<br><strong>【國重／セミナー案内部屋】</strong>にてお待ちしております。</p>
+      <a href="https://www.chatwork.com/g/SeminarInfoRoom" class="contact-btn" target="_blank" rel="noopener">Chatworkグループへ →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="apply">
+  <div class="container">
+    <h2 class="section-title">情報整理の第一歩を、ここから。</h2>
+    <p>Notion 1.0の基本を身につけて、<br>「覚える」から「探せる」へ、あなたの情報管理を変えましょう。</p>
+    <a href="https://sns109.jp/p/r/Gd2ld3p5" class="cta-btn">セミナーに申し込む →</a>
+    <div class="cta-note">📅 4/25（土）13:00〜｜Zoom開催｜一般 5,000円 ／ AI効率課メンバー 1,000円</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="https://www.aixnotion.com/">KUNISHIGE Lab</a>
+    <a href="https://www.aixnotion.com/privacy">プライバシーポリシー</a>
+    <a href="https://www.aixnotion.com/legal">特定商取引法に基づく表記</a>
+    <a href="https://www.chatwork.com/g/SeminarInfoRoom">お問い合わせ</a>
+  </div>
+  <p>© KUNISHIGE Lab 2024-2026</p>
+</footer>
+
+</body>
+</html>
